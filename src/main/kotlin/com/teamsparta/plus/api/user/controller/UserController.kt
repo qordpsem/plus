@@ -5,6 +5,7 @@ import com.teamsparta.plus.api.user.dto.LoginResponse
 import com.teamsparta.plus.api.user.dto.SignUpRequest
 import com.teamsparta.plus.api.user.dto.UserResponse
 import com.teamsparta.plus.domain.user.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,7 +26,7 @@ class UserController (
     }
 
     @PostMapping("/signup")
-    fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<UserResponse>{
+    fun signUp(@Valid @RequestBody signUpRequest: SignUpRequest): ResponseEntity<UserResponse>{
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.signUp(signUpRequest))
