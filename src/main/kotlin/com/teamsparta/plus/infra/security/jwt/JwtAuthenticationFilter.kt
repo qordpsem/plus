@@ -40,11 +40,12 @@ class JwtAuthenticationFilter(
                         val authentication = JwtAuthenticationToken(
                                 principal = principal,
                                 details = WebAuthenticationDetailsSource().buildDetails(request),
-                        authorities=
+                                authorities = null
                         )
                         SecurityContextHolder.getContext().authentication = authentication
                     }
         }
+        filterChain.doFilter(request,response)
     }
 
     private fun HttpServletRequest.getBearerToken(): String?{
