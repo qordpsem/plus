@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated
 
 @Validated
 data class SignUpRequest(
-        @field: ValidNickname
+        @field : ValidNickname
         var nickname: String,
         var password: String,
         var passwordCheck: String

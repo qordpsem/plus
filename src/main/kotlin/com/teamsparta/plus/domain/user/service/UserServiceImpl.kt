@@ -9,13 +9,17 @@ import com.teamsparta.plus.domain.exception.ModelNotFoundException
 import com.teamsparta.plus.domain.user.model.User
 import com.teamsparta.plus.domain.user.model.toResponse
 import com.teamsparta.plus.domain.user.repository.UserRepository
+import com.teamsparta.plus.infra.security.jwt.JwtPlugin
 import jakarta.transaction.Transactional
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class UserServiceImpl (
-        private val userRepository: UserRepository
+        private val userRepository: UserRepository,
+        private val passwordEncoder: PasswordEncoder,
+        private val jwtPlugin: JwtPlugin
 ) : UserService{
 
     @Transactional
@@ -26,9 +30,8 @@ class UserServiceImpl (
 
         return userRepository.save(
                 User(
-                        //패스워드 암호화
                         nickname = request.nickname,
-                        password = request.password
+                        password = passwordEncoder.encode(request.password)
                 )
         ).toResponse()
 
@@ -38,14 +41,15 @@ class UserServiceImpl (
     @Transactional
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findByNickname(request.nickname)
-        if (user == null || user.password != request.password){
+        if (user == null || !passwordEncoder.matches(request.password, user.password)){
             throw InvalidCredentialsException("닉네임 또는 패스워드를 확인해주세요.")
         }
         return LoginResponse(
+                accessToken= jwtPlugin.generateAccessToken(
+                        nickname = user.nickname),
                 id = user.id,
                 nickname = user.nickname
         )
     }
-
 
 }

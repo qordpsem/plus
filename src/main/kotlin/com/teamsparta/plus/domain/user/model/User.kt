@@ -2,6 +2,7 @@ package com.teamsparta.plus.domain.user.model
 
 import com.teamsparta.plus.api.user.dto.UserResponse
 import jakarta.persistence.*
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 @Entity
 @Table(name="app_user")
@@ -10,8 +11,11 @@ class User(
         var nickname: String,
 
         @Column(name="password", nullable=false)
-        var password: String
-)  {
+        var password: String,
+
+        @Column(name = "token", nullable = false)
+        val token: String
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
